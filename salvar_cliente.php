@@ -103,38 +103,3 @@ echo json_encode([
     'status' => true,
     'mensagem' => 'Cliente cadastrado com sucesso.'
 ]);
-
-/*
-// agora vamos salvar no banco de Dados MySQL
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "cadastro_clientes";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    echo json_encode([
-        'status' => false,
-        'mensagem' => 'Erro ao conectar ao banco de dados: ' . $conn->connect_error
-    ]);
-    exit;
-}
-
-$stmt = $conn->prepare("INSERT INTO clientes (nome, cpf, data_nascimento, telefone, email, logradouro, cep, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param( $nome, $cpf, $dataNascimento, $telefone, $email, $logradouro, $cep, $bairro, $cidade, $estado);     
-if ($stmt->execute() === false) {
-    echo json_encode([
-        'status' => false,
-        'mensagem' => 'Erro ao salvar no banco de dados: ' . $stmt->error
-    ]);
-    exit;
-}
-
-echo json_encode([
-    'status' => true,
-    'mensagem' => 'Cliente cadastrado com sucesso.'
-]);
-$stmt->close();
-$conn->close();
-*/
