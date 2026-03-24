@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Cliente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -56,7 +57,7 @@
 
                         <div class="mb-3">
                             <label for="cep" class="form-label">CEP</label>
-                            <input type="text" class="form-control" id="cep" name="cep">
+                            <input type="text" class="form-control" id="cep" name="cep" maxlength="9" onblur="this.value = formatarCEP(this.value)">
                         </div>
 
                         <div class="mb-3">
@@ -127,6 +128,68 @@ document.getElementById('formCliente').addEventListener('submit', function(e) {
     botao.disabled = true;
     botao.innerText = 'Salvando...';
 
+    //function para validar cpf
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+            return false;
+        }
+        let soma = 0;
+        for (let i = 0; i < 9; i++) {
+            soma += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let resto = 11 - (soma % 11);
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+        if (resto !== parseInt(cpf.charAt(9))) {
+            return false;
+        }
+        soma = 0;
+        for (let i = 0; i < 10; i++) {
+            soma += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        resto = 11 - (soma % 11);
+        if (resto === 10 || resto === 11) {
+            resto = 0;
+        }
+        return resto === parseInt(cpf.charAt(10));
+    }
+
+    if(!validarCPF(dados.get('cpf'))) {
+        mensagem.innerHTML = '<div class="alert alert-danger">CPF inválido.</div>';
+        botao.disabled = false;
+        botao.innerText = 'Cadastrar';
+        return;
+    }
+
+    //fucntion para validar se a data digitada é uma data de nascimento válida
+    function validarData(dataString) {
+    // 1. Verifica formato com Regex (dd/mm/aaaa)
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!regex.test(dataString)) return false;
+
+    // 2. Separa os componentes
+    const partes = dataString.split('/');
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10);
+    const ano = parseInt(partes[2], 10);
+
+    // 3. Cria objeto Date e verifica lógica (ex: 30/02)
+    const data = new Date(ano, mes - 1, dia);
+    return data.getFullYear() === ano &&
+           data.getMonth() === mes - 1 &&
+           data.getDate() === dia;
+}
+
+    if(validarData(dados.get('data_nascimento'))) {
+        mensagem.innerHTML = '<div class="alert alert-danger">Data de nascimento inválida. Use o formato dd/mm/aaaa.</div>';
+        botao.disabled = false;
+        botao.innerText = 'Cadastrar';
+        return;
+    }
+
+
     fetch('salvar_cliente.php', {
         method: 'POST',
         body: dados
@@ -152,6 +215,36 @@ document.getElementById('formCliente').addEventListener('submit', function(e) {
         botao.innerText = 'Cadastrar';
     });
 });
+
+ //funcao para formatar a mascara do campo cpf
+document.getElementById('cpf').addEventListener('input', function(e) {
+    let valor = e.target.value.replace(/\D/g, '');
+    if (valor.length > 11) valor = valor.slice(0, 11);
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    e.target.value = valor;
+});
+//funcao para formatar a mascara do campo telefone
+document.getElementById('telefone').addEventListener('input', function(e) { 
+    let valor = e.target.value.replace(/\D/g, '');
+    if (valor.length > 11) valor = valor.slice(0, 11);
+    valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    e.target.value = valor;
+    });
+
+    //funcao para formatar a mascara do campo cep
+    document.getElementById('cep').addEventListener('input', function(e) {
+    let valor = e.target.value.replace(/\D/g, '');
+    if (valor.length > 8) valor = valor.slice(0, 8);
+    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    e.target.value = valor;
+    });
+
+
+   
+
 </script>
 
 </body>
