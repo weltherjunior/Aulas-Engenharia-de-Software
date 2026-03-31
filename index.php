@@ -16,7 +16,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="mb-0">Cadastro de Cliente</h3>
-                    </div>
+                    </div>  
                      
                      <div id="mensagem"></div>
 
@@ -152,8 +152,8 @@ document.getElementById('formCliente').addEventListener('submit', function(e) {
     
         if (retorno.status) {
             mensagem.innerHTML = '<div class="alert alert-success">' + retorno.mensagem + '</div>';
-            form.reset();
-            alert("passou");
+           // form.reset();
+            alert("Cliente cadastrado com sucesso! Código do cliente: " + retorno.codigoCliente);
         } else {
             mensagem.innerHTML = '<div class="alert alert-danger">' + retorno.mensagem + '</div>';
         }

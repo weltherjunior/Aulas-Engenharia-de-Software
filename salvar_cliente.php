@@ -1,4 +1,5 @@
 <?php
+
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -74,32 +75,63 @@ if (
     exit;
 }
 
-// criar arquivo texto
-$linha  = "----------------------------------------" . PHP_EOL;
-$linha .= "Nome: " . $nome . PHP_EOL;
-$linha .= "CPF: " . $cpf . PHP_EOL;
-$linha .= "Data de Nascimento: " . $dataNascimento . PHP_EOL;
-$linha .= "Telefone: " . $telefone . PHP_EOL;
-$linha .= "E-mail: " . $email . PHP_EOL;
-$linha .= "Logradouro: " . $logradouro . PHP_EOL;
-$linha .= "CEP: " . $cep . PHP_EOL;
-$linha .= "Bairro: " . $bairro . PHP_EOL;
-$linha .= "Cidade: " . $cidade . PHP_EOL;
-$linha .= "Estado: " . $estado . PHP_EOL;
-$linha .= "Data do Cadastro: " . date('d/m/Y H:i:s') . PHP_EOL;
+// // criar arquivo texto
+// $linha  = "----------------------------------------" . PHP_EOL;
+// $linha .= "Nome: " . $nome . PHP_EOL;
+// $linha .= "CPF: " . $cpf . PHP_EOL;
+// $linha .= "Data de Nascimento: " . $dataNascimento . PHP_EOL;
+// $linha .= "Telefone: " . $telefone . PHP_EOL;
+// $linha .= "E-mail: " . $email . PHP_EOL;
+// $linha .= "Logradouro: " . $logradouro . PHP_EOL;
+// $linha .= "CEP: " . $cep . PHP_EOL;
+// $linha .= "Bairro: " . $bairro . PHP_EOL;
+// $linha .= "Cidade: " . $cidade . PHP_EOL;
+// $linha .= "Estado: " . $estado . PHP_EOL;
+// $linha .= "Data do Cadastro: " . date('d/m/Y H:i:s') . PHP_EOL;
 
-$arquivo = 'clientes.txt';
+// $arquivo = 'clientes.txt';
 
-if (file_put_contents($arquivo, $linha, FILE_APPEND) === false) {
+// if (file_put_contents($arquivo, $linha, FILE_APPEND) === false) {
     
+//     echo json_encode([
+//         'status' => false,
+//         'mensagem' => 'Erro ao gravar o arquivo TXT.'
+//     ]);
+//     exit;
+// }else{
+    
+
+// }
+
+//CRIAR CONEXAO COM O BANCO DE DADOS
+$conn = new PDO("mysql:host=localhost;dbname=engsoft;charset=utf8mb4", "root", "");
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$stmt = $conn->prepare("INSERT INTO cliente (
+    nome, cpf, data_nascimento, telefone, email, logradouro, cep, bairro, cidade, estado
+) VALUES (
+    :nome, :cpf, :data_nascimento, :telefone, :email, :logradouro, :cep, :bairro, :cidade, :estado
+)");
+$stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
+$stmt->bindValue(':cpf', $cpf, PDO::PARAM_STR);
+$stmt->bindValue(':data_nascimento', $dataNascimento, PDO::PARAM_STR);
+$stmt->bindValue(':telefone', $telefone, PDO::PARAM_STR);
+$stmt->bindValue(':email', $email, PDO::PARAM_STR);
+$stmt->bindValue(':logradouro', $logradouro, PDO::PARAM_STR);
+$stmt->bindValue(':cep', $cep, PDO::PARAM_STR);
+$stmt->bindValue(':bairro', $bairro, PDO::PARAM_STR);
+$stmt->bindValue(':cidade', $cidade, PDO::PARAM_STR);
+$stmt->bindValue(':estado', $estado, PDO::PARAM_STR);
+if ($stmt->execute() === false) {
     echo json_encode([
         'status' => false,
-        'mensagem' => 'Erro ao gravar o arquivo TXT.'
-    ]);
-    exit;
-}
-
+        'mensagem' => 'Erro ao salvar no banco de dados: '
+    ]); exit;
+}else{
 echo json_encode([
     'status' => true,
-    'mensagem' => 'Cliente cadastrado com sucesso.'
+    'mensagem' => 'Cliente cadastrado no Banco de Dados com sucesso.',
+     'codigoCliente' => $conn->lastInsertId()
 ]);
+}
+
+
