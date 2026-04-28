@@ -8,12 +8,7 @@
 session_start();
 require_once '../config/database.php';
 require_once '../src/auth.php';
-
-// Redireciona se já estiver logado
-if (isset($_SESSION['usuario_id'])) {
-    header('Location: index.php');
-    exit;
-}
+verificarAcesso('admin');
 
 $erros  = [];
 $nome   = '';
@@ -21,7 +16,7 @@ $email  = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    validarCsrf();
+    //validarCsrf();
 
     $nome  = trim($_POST['nome']  ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -37,38 +32,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erros[] = 'Informe um e-mail válido.';
     }
 
-    if (strlen($senha) < 8) {
-        $erros[] = 'A senha deve ter pelo menos 8 caracteres.';
-    }
+    if($senha!=""){
 
-    if ($senha !== $conf) {
-        $erros[] = 'As senhas não conferem.';
+        if (strlen($senha) < 8) {
+            $erros[] = 'A senha deve ter pelo menos 8 caracteres.';
+        }
+
+        if ($senha !== $conf) {
+            $erros[] = 'As senhas não conferem.';
+        }
     }
 
     if (empty($erros)) {
         $pdo = getConexao();
 
         // Verifica e-mail duplicado
-        $check = $pdo->prepare('SELECT id FROM usuarios WHERE email = :email');
-        $check->bindValue(':email', $email, PDO::PARAM_STR);
-        $check->execute();
-
-        if ($check->fetch()) {
-            $erros[] = 'Este e-mail já está cadastrado.';
-        } else {
-            $hash = password_hash($senha, PASSWORD_DEFAULT);
+       
+           if($senha!=""){
+                $hash = password_hash($senha, PASSWORD_DEFAULT);
+            }
             $stmt = $pdo->prepare(
-                'INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)'
+                'UPDATE usuarios SET 
+                nome = :nome, email = :email' . ($senha != "" ? ', senha = :senha' : '') . ' 
+                WHERE id = :id'
             );
             $stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
             $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-            $stmt->bindValue(':senha', $hash, PDO::PARAM_STR);
+            if($senha!=""){
+                $stmt->bindValue(':senha', $hash, PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
             $stmt->execute();
 
-            header('Location: login.php?cadastro=ok');
+            header('Location: admin.php?cadastro=ok');
             exit;
-        }
+       
     }
+}else{
+
+//Buscar usuario no banco ataves do ID
+    $pdo = getConexao();
+    $buscar = $pdo->prepare('SELECT * FROM usuarios WHERE id = :id');
+    $buscar->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
+    $buscar->execute();
+    $usuario = $buscar->fetch(PDO::FETCH_ASSOC);
+
+    $nome = $usuario['nome'];
+    $email = $usuario['email'];
+
+
+    //print_r($usuario);
+
 }
 
 // consulta dados do usuario
@@ -84,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <div class="card">
-        <h1>Criar conta</h1>
+        <h1>Editar conta</h1>
 
         <?php if (!empty($erros)): ?>
             <div class="alerta erro">
@@ -96,9 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="cadastro.php">
+        <form method="POST" action="editar_usuario.php">
             <input type="hidden" name="csrf_token" value="<?= gerarTokenCsrf() ?>">
-
+            <input type="hidden" name="id" value="<?= e($usuario['id']) ?>">    
             <div class="campo">
                 <label for="nome">Nome completo</label>
                 <input type="text" id="nome" name="nome"
@@ -113,15 +127,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="campo">
                 <label for="senha">Senha <small>(mínimo 8 caracteres)</small></label>
-                <input type="password" id="senha" name="senha" required autocomplete="new-password">
+                <input type="password" id="senha" name="senha"  autocomplete="new-password">
             </div>
-
+            
             <div class="campo">
                 <label for="confirmar">Confirmar senha</label>
-                <input type="password" id="confirmar" name="confirmar" required autocomplete="new-password">
+                <input type="password" id="confirmar" name="confirmar"  autocomplete="new-password">
             </div>
+            
+            <div class="campo">
+                <select name="perfil" id="perfil" required>
+                    <option value="">Selecione o perfil</option>
+                    <option value="admin" <?= $usuario['perfil'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                    <option value="usuario" <?= $usuario['perfil'] === 'usuario' ? 'selected' : '' ?>>Usuário</option>
+                </select>
+            </div>
+                
 
             
+
 
             <button type="submit" class="btn-primario">Cadastrar</button>
         </form>

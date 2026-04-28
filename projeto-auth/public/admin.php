@@ -53,6 +53,7 @@ $usuarios = $stmt->fetchAll();
                             <th>E-mail</th>
                             <th>Perfil</th>
                             <th>Cadastrado em</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,6 +64,10 @@ $usuarios = $stmt->fetchAll();
                                 <td><?= e($u['email']) ?></td>
                                 <td><span class="badge"><?= e($u['perfil']) ?></span></td>
                                 <td><?= e($u['criado_em']) ?></td>
+                                <td>
+                                    <a href="editar_usuario.php?id=<?= e($u['id']) ?>" class="badge">Editar</a>
+                                    
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

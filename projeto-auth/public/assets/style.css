@@ -96,10 +96,21 @@ body {
     transition: border-color 0.2s;
 }
 
+
+
 .campo input:focus {
     outline: none;
     border-color: #1A56A0;
     box-shadow: 0 0 0 3px rgba(26, 86, 160, 0.12);
+}
+
+.campo select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #063f96;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
 }
 
 /* ─── Botões ─────────────────────────────────────────── */

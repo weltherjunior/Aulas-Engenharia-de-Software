@@ -3,12 +3,6 @@
 -- Execute este script antes de rodar o projeto
 -- ============================================================
 
--- Cria o banco se não existir
-CREATE DATABASE IF NOT EXISTS auth_db
-    CHARACTER SET utf8
-    COLLATE utf8_general_ci;
-
-USE auth_db;
 
 -- ─── Tabela de usuários ──────────────────────────────────────
 CREATE TABLE IF NOT EXISTS usuarios (
