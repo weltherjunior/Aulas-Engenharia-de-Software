@@ -1,0 +1,211 @@
+/* assets/style.css — Aula 1: Agenda de Contatos */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 760px;
+    margin: 32px auto;
+    padding: 0 20px;
+}
+
+/* ── Topo ── */
+.topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.topo h1 { font-size: 22px; color: #1A56A0; }
+.topo a  { font-size: 14px; color: #1A56A0; text-decoration: none; }
+
+.meta { font-size: 13px; color: #777; margin-bottom: 16px; }
+
+/* ── Card de contato ── */
+.card-contato {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.07);
+}
+
+.contato-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nome  { display: block; font-size: 17px; font-weight: bold; }
+.email { display: block; font-size: 13px; color: #666; }
+
+/* ── Ações ── */
+.acoes { display: flex; gap: 12px; font-size: 13px; }
+.acoes a { color: #1A56A0; text-decoration: none; }
+.acoes a.excluir { color: #c0392b; }
+.acoes a:hover { text-decoration: underline; }
+
+/* ── Telefones ── */
+.telefones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.telefone {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f4f6fb;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+}
+
+.badge-tipo {
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.sem-tel { font-size: 13px; color: #999; font-style: italic; }
+
+/* ── Paginação ── */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.paginacao a {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    text-decoration: none;
+    color: #1A56A0;
+    background: #fff;
+    transition: background 0.15s;
+}
+
+.paginacao a:hover { background: #f0f4fb; }
+.paginacao a.ativa {
+    background: #1A56A0;
+    color: #fff;
+    border-color: #1A56A0;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* ── Formulários ── */
+.campo { margin-bottom: 16px; }
+.campo label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #444;
+}
+.campo input, .campo select {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+}
+.campo input:focus, .campo select:focus {
+    outline: none;
+    border-color: #1A56A0;
+    box-shadow: 0 0 0 3px rgba(26,86,160,.12);
+}
+
+/* ── Linha de telefone (dinâmica) ── */
+.linha-telefone {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+.linha-telefone select { width: 130px; flex-shrink: 0; }
+.linha-telefone input  { flex: 1; }
+
+/* ── Botões ── */
+.btn-primario {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #1A56A0;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-primario:hover { background: #154080; }
+
+.btn-secundario {
+    display: inline-block;
+    padding: 8px 16px;
+    background: transparent;
+    color: #1A56A0;
+    border: 1px solid #1A56A0;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 8px 0 16px;
+}
+.btn-secundario:hover { background: #f0f4fb; }
+
+.btn-remover {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+
+/* ── Alertas ── */
+.alerta {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+.alerta.sucesso { background: #dcfce7; color: #15803d; border-left: 4px solid #15803d; }
+.alerta.erro    { background: #fee2e2; color: #b91c1c; border-left: 4px solid #b91c1c; }
+.alerta ul { padding-left: 18px; }
+
+/* ── Tabela ── */
+hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+h3 { font-size: 16px; margin-bottom: 8px; }
+
+.tabela { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+.tabela th, .tabela td { padding: 8px 12px; border: 1px solid #e5e7eb; text-align: left; }
+.tabela th { background: #f0f4f8; color: #1A56A0; font-weight: bold; }
+.tabela tr:nth-child(even) td { background: #f9fafb; }
+
+.vazio { text-align: center; color: #999; padding: 40px 0; }
