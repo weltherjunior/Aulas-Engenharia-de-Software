@@ -11,7 +11,15 @@
 
 
 <form action="upload.php" method="post" enctype="multipart/form-data">
-  <label for="file">Escolha um arquivo:</label>
+
+<legend>Nome</legend>
+<input type="text" name="nome" required><br><br>
+<legend>Email</legend>
+<input type="email" name="email" required><br><br>
+<legend>Telefone</legend>
+<input type="text" name="telefone" required><br><br>
+
+<label for="file">Escolha um arquivo:</label>
   <input type="file" name="file" id="file" accept=".pdf,.doc,.docx"><br><br>
   <input type="submit" value="Enviar">
 </form>
